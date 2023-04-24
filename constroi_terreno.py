@@ -3,13 +3,18 @@ tipo_terreno = {
     "a": "AREIA",
     "f": "FLORESTA",
     "m": "MONTANHA",
-    "w": "AGUA"
+    "w": "AGUA",
+    "y": "AMARELO",
+    "b": "BRANCO",
+    "p": "PRETO"
 }
 
 terreno = []
 masmorra1 = []
 masmorra2 = []
 masmorra3 = []
+final = []
+
 
 with open("./terreno.txt", "r") as arquivo:
     mapa = arquivo.readlines()
@@ -47,6 +52,15 @@ with open("./masmorra3.txt", "r") as arquivo:
                 temp.append(tipo_terreno[caractere])
         masmorra3.append(temp)
 
+with open("./final.txt", "r") as arquivo:
+    mapa = arquivo.readlines()
+    for linha in mapa:
+        temp = []
+        for caractere in linha:
+            if caractere != '\n':
+                temp.append(tipo_terreno[caractere])
+            final.append(temp)
+
 def retorna_terreno():
     return terreno
 
@@ -58,3 +72,6 @@ def retorna_masmorra2():
 
 def retorna_masmorra3():
     return masmorra3
+
+def retorna_final():
+    return final

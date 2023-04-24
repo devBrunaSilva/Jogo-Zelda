@@ -1,8 +1,9 @@
 import pygame
 import math
+import masmorras
 import constroi_terreno
 import transforma_terreno
-
+import monta_terreno
 
 AGUA = (30, 144, 255)
 AREIA = (244, 164, 96)
@@ -10,12 +11,21 @@ FLORESTA  = (34, 139, 34)
 GRAMA = (124, 252, 0)
 MONTANHA = (139, 137, 137)
 
+AMARELO = (201, 176, 10)
+BRANCO = (255, 255, 255)
+PRETO = (0, 0, 0)
+
 variavel = {
     "AGUA": AGUA,
     "AREIA": AREIA,
     "FLORESTA": FLORESTA,
     "GRAMA": GRAMA,
-    "MONTANHA": MONTANHA
+    "MONTANHA": MONTANHA,
+
+
+    "AMARELO": AMARELO,
+    "BRANCO": BRANCO,
+    "PRETO": PRETO
 }
 
 CUSTO = {
@@ -41,8 +51,9 @@ terreno = constroi_terreno.retorna_terreno()
 masmorra1 = constroi_terreno.retorna_masmorra1()
 masmorra2 = constroi_terreno.retorna_masmorra2()
 masmorra3 = constroi_terreno.retorna_masmorra3()
+final = constroi_terreno.retorna_final()
 transformado = transforma_terreno.transforma_terreno(terreno, variavel)
-
+final_transformado = transforma_terreno.transforma_terreno(final, variavel)
 
 inicio = (27,24)
 destino1 = (32,5)
@@ -88,19 +99,18 @@ def custo(lugar_atual, vizinho):
     
 
 def montar_caminho(caminho_recente, ponto_partida, ponto_chegada):
-    pygame.draw.rect(tela, (0,255,242), (ponto_partida[1] * TAMANHO, ponto_partida[0]*TAMANHO, TAMANHO, TAMANHO))
+    pygame.draw.rect(tela, (0,255,242), (ponto_partida[1] * TAMANHO, ponto_partida[0]*TAMANHO, TAMANHO - 1, TAMANHO - 1))
 
-    pygame.draw.rect(tela, (79,79,79), (ponto_chegada[1] * TAMANHO, ponto_chegada[0]*TAMANHO, TAMANHO, TAMANHO))
+    pygame.draw.rect(tela, (79,79,79), (ponto_chegada[1] * TAMANHO, ponto_chegada[0]*TAMANHO, TAMANHO - 1 , TAMANHO - 1))
 
-    pygame.display.update()
-    pygame.time.wait(100)
+    tempo = pygame.time.Clock()
         
     for quadrado in caminho_recente:
         x, y = quadrado
-        rect = pygame.Rect(y * TAMANHO, x * TAMANHO, TAMANHO, TAMANHO)
-        pygame.draw.rect(tela, (255,0,0), rect)
+        rect = pygame.Rect(y * TAMANHO, x * TAMANHO, TAMANHO - 1, TAMANHO - 1)
+        tela.fill((255,0,0), rect=rect)
         pygame.display.update()
-        pygame.time.wait(100)
+        tempo.tick(7)
 
 
 def algoritmo_estrela(transformado, ponto_partida, ponto_chegada):
@@ -167,24 +177,15 @@ for event in pygame.event.get():
         pygame.quit()
         quit()
 
-for linha in range(LINHA):
-    for coluna in range(COLUNA):
-        if transformado[linha][coluna] == AGUA:
-            cor = (45,72,181)
-        elif transformado[linha][coluna] == AREIA:
-            cor = (196,188,148)
-        elif transformado[linha][coluna] == FLORESTA:
-            cor = (1,115,53)
-        elif transformado[linha][coluna] == GRAMA:
-            cor = (140,211,70)
-        elif transformado[linha][coluna] == MONTANHA:
-            cor = (82,70,44)
+monta_terreno.monta_terreno(transformado, LINHA, COLUNA, AGUA, AREIA, FLORESTA, GRAMA, MONTANHA, AMARELO, BRANCO, PRETO, TAMANHO, tela )
 
+pygame.draw.rect(tela, (255, 0, 0), (inicio[1] * TAMANHO, inicio[0] * TAMANHO, TAMANHO - 1, TAMANHO - 1))
 
+pygame.draw.rect(tela, (0, 250, 229), (inicio[1] * TAMANHO, inicio[0] * TAMANHO, TAMANHO - 1, TAMANHO - 1))
 
-        pygame.draw.rect(tela, cor, (coluna * TAMANHO,
-                            linha * TAMANHO, TAMANHO-1, TAMANHO-1))
-        
+pygame.display.update()
+
+pygame.time.delay(3000)
 
 destinos =  [destino1, destino2, destino3]
 menor = 100000000000
@@ -193,6 +194,11 @@ partida = inicio
 caminho_atual = []
 
 while destinos:
+    for evento in pygame.event.get():
+        if evento.type == pygame.QUIT:
+            pygame.quit()
+            quit()
+
     for i, melhor_caminho in enumerate(destinos):
         caminho, custo_total = algoritmo_estrela(transformado, partida, melhor_caminho)
         if(menor > custo_total):
@@ -201,8 +207,32 @@ while destinos:
             caminho_atual = caminho
     
     montar_caminho(caminho_atual, partida, destinos[indice_destino])
+    if destinos[indice_destino] == destino1:
+        masmorras.masmorras(masmorra1, 1)
+    elif destinos[indice_destino] == destino2:
+        masmorras.masmorras(masmorra2, 2)
+    elif destinos[indice_destino] == destino3:
+        masmorras.masmorras(masmorra3, 3)
+
+    tela = pygame.display.set_mode((LARGURA, ALTURA))
+    monta_terreno.monta_terreno(transformado, LINHA, COLUNA, AGUA, AREIA, FLORESTA, GRAMA, MONTANHA, AMARELO, BRANCO, PRETO, TAMANHO, tela)
+
+
     partida = destinos[indice_destino]
     destinos.remove(destinos[indice_destino])
     menor = 100000000000
 
+caminho, custo_total = algoritmo_estrela(transformado, destino3, espada)
+
+if menor > custo_total:
+    menor = custo_total
+    indice_destino = i
+    caminho_atual = caminho
+
+montar_caminho(caminho_atual, destino3, espada)
+pygame.time.delay(500)
+
+monta_terreno.monta_terreno(final_transformado, LINHA, COLUNA, AGUA, AREIA, FLORESTA, GRAMA, MONTANHA, AMARELO, BRANCO, PRETO, TAMANHO, tela)
+
 pygame.display.update()
+input()
