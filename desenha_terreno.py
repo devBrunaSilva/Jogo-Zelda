@@ -5,6 +5,7 @@ def desenha_terreno(transformado, LINHA, COLUNA, AGUA, AREIA, FLORESTA, GRAMA, M
 
   for linha in range(LINHA):
     for coluna in range(COLUNA):
+      #Cor do espaço com base no seu valor de custo
         if transformado[linha][coluna] == AGUA:
           cor = (45,72,181)
         elif transformado[linha][coluna] == AREIA:
@@ -20,6 +21,4 @@ def desenha_terreno(transformado, LINHA, COLUNA, AGUA, AREIA, FLORESTA, GRAMA, M
         elif transformado[linha][coluna] == PAREDE:
           cor = (255, 255, 255)
         
-
-
         pygame.draw.rect(janela, cor, (coluna * TAMANHO, linha * TAMANHO, TAMANHO-1, TAMANHO-1))
