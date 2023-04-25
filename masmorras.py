@@ -4,17 +4,18 @@ import constroi_terreno
 import transforma_terreno
 
 def masmorras(area, valor_masmorra):
-  AREIA = (244, 164, 96)
-  MONTANHA = (139, 137, 137)
+
+  CAMINHO = (244, 224, 224)
+  PAREDE = (139, 137, 137)
 
   variavel = {
-    "AREIA": AREIA,
-    "MONTANHA": MONTANHA,
+    "CAMINHO": CAMINHO,
+    "PAREDE": PAREDE,
   }
 
   CUSTO = {
-    AREIA: 20,
-    MONTANHA: 150,
+    CAMINHO: 10,
+    PAREDE: 1000,
   }
 
 
@@ -77,15 +78,18 @@ def masmorras(area, valor_masmorra):
     else:
         return float('inf')
 
+  
+
   def montar_caminho(caminho_recente, ponto_partida, ponto_chegada):
 
-      #Monta o ponto de partida
+    #Monta o ponto de partida
     pygame.draw.rect(janela, (0,255,242), (ponto_partida[1] * TAMANHO, ponto_partida[0]*TAMANHO, TAMANHO - 1, TAMANHO - 1))
 
       #Monta o ponto de destino
-    pygame.draw.rect(janela, (0,250,229), (ponto_chegada[1] * TAMANHO,  ponto_chegada[0]*TAMANHO, TAMANHO - 1, TAMANHO - 1)) 
+    pygame.draw.rect(janela, (12, 0, 255), (ponto_chegada[1] * TAMANHO,  ponto_chegada[0]*TAMANHO, TAMANHO - 1, TAMANHO - 1)) 
 
     tempo = pygame.time.Clock()
+    
     caminho = caminho_recente +  caminho_recente[::-1]
     
     for i, espaco in enumerate(caminho):
@@ -93,7 +97,7 @@ def masmorras(area, valor_masmorra):
       cor = (255, 0, 0)
 
       if i>= len(caminho)/2:
-        cor = (255, 165, 0)
+        cor = (128, 90, 213)
 
       rect = pygame.Rect(y * TAMANHO, x * TAMANHO, TAMANHO -1, TAMANHO - 1)
       janela.fill(cor, rect=rect)
@@ -160,9 +164,9 @@ def masmorras(area, valor_masmorra):
 
   for linha in range(LINHAS):
     for coluna in range(COLUNAS):
-        if transformado[linha][coluna] == AREIA:
+        if transformado[linha][coluna] == CAMINHO:
             cor = (196, 188, 148)
-        elif transformado[linha][coluna] == MONTANHA:
+        elif transformado[linha][coluna] == PAREDE:
             cor = (82, 70, 44)
 
 
@@ -176,6 +180,3 @@ def masmorras(area, valor_masmorra):
   montar_caminho(caminho, partida, destino)
 
   janela = pygame.display.set_mode((LARGURA, ALTURA))
-
-  pygame.display.update()
-

@@ -1,7 +1,7 @@
 import pygame
 
 
-def monta_terreno(transformado, LINHA, COLUNA, AGUA, AREIA, FLORESTA, GRAMA, MONTANHA, AMARELO, BRANCO, PRETO, TAMANHO, janela):
+def desenha_terreno(transformado, LINHA, COLUNA, AGUA, AREIA, FLORESTA, GRAMA, MONTANHA, CAMINHO, PAREDE, TAMANHO, janela):
 
   for linha in range(LINHA):
     for coluna in range(COLUNA):
@@ -15,12 +15,10 @@ def monta_terreno(transformado, LINHA, COLUNA, AGUA, AREIA, FLORESTA, GRAMA, MON
           cor = (140,211,70)
         elif transformado[linha][coluna] == MONTANHA:
           cor = (82,70,44)
-        elif transformado[linha][coluna] == AMARELO:
+        elif transformado[linha][coluna] == CAMINHO:
           cor = (201, 176, 10)
-        elif transformado[linha][coluna] == BRANCO:
+        elif transformado[linha][coluna] == PAREDE:
           cor = (255, 255, 255)
-        elif transformado[linha][coluna] == PRETO:
-          cor = (0, 0, 0)
         
 
 
